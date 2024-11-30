@@ -81,7 +81,7 @@ dailyare --log-format json
 
 ## Similar Tools
 
-Shell script version using GitHub CLI:
+Shell script version--without caching--using GitHub CLI:
 
 ```bash
 #!/bin/bash
