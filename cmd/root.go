@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/cli/go-gh/v2/pkg/api"
 	"github.com/go-logr/logr"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
+	"github.com/gkwa/dailyare/core"
 	"github.com/gkwa/dailyare/internal/logger"
 )
 
@@ -17,6 +19,8 @@ var (
 	verbose   int
 	logFormat string
 	cliLogger logr.Logger
+	since     string
+	noCache   bool
 )
 
 var rootCmd = &cobra.Command{
@@ -24,15 +28,32 @@ var rootCmd = &cobra.Command{
 	Short: "A brief description of your application",
 	Long:  `A longer description that spans multiple lines and likely contains examples and usage of using your application.`,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
-		// Initialize the console logger just before running
-		// a command only if one wasn't provided. This allows other
-		// callers (e.g. unit tests) to inject their own logger ahead of time.
 		if cliLogger.IsZero() {
 			cliLogger = logger.NewConsoleLogger(verbose, logFormat == "json")
 		}
 
 		ctx := logr.NewContext(context.Background(), cliLogger)
 		cmd.SetContext(ctx)
+	},
+	Run: func(cmd *cobra.Command, args []string) {
+		logger := LoggerFrom(cmd.Context())
+		logger.Info("Running command")
+
+		client, err := api.DefaultRESTClient()
+		if err != nil {
+			logger.Error(err, "Failed to create REST client")
+			return
+		}
+
+		notificationRepo := core.NewGithubRepository(client)
+		prService := core.NewGithubPRService(client)
+		cacheService := core.NewFileCacheService(viper.GetString("home"))
+		service := core.NewNotificationService(notificationRepo, prService, cacheService)
+
+		err = service.FetchNotifications(logger, since, noCache)
+		if err != nil {
+			logger.Error(err, "Failed to fetch notifications")
+		}
 	},
 }
 
@@ -49,6 +70,8 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.dailyare.yaml)")
 	rootCmd.PersistentFlags().CountVarP(&verbose, "verbose", "v", "increase verbosity")
 	rootCmd.PersistentFlags().StringVar(&logFormat, "log-format", "", "json or text (default is text)")
+	rootCmd.Flags().StringVar(&since, "since", "7d", "Filter notifications by time (default: 7d)")
+	rootCmd.Flags().BoolVar(&noCache, "no-cache", false, "Bypass the cache and fetch fresh data")
 
 	if err := viper.BindPFlag("verbose", rootCmd.PersistentFlags().Lookup("verbose")); err != nil {
 		fmt.Printf("Error binding verbose flag: %v\n", err)
@@ -70,6 +93,8 @@ func initConfig() {
 		viper.AddConfigPath(home)
 		viper.SetConfigType("yaml")
 		viper.SetConfigName(".dailyare")
+
+		viper.Set("home", home)
 	}
 
 	viper.AutomaticEnv()
