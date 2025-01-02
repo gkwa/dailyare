@@ -5,7 +5,7 @@ go 1.23.3
 require (
 	github.com/cli/go-gh/v2 v2.11.1
 	github.com/fatih/color v1.18.0
-	github.com/go-git/go-git/v5 v5.13.0
+	github.com/go-git/go-git/v5 v5.13.1
 	github.com/go-logr/logr v1.4.2
 	github.com/go-logr/zerologr v1.2.3
 	github.com/google/go-containerregistry v0.20.2
@@ -24,11 +24,11 @@ require (
 	github.com/cli/safeexec v1.0.0 // indirect
 	github.com/cli/shurcooL-graphql v0.0.4 // indirect
 	github.com/cloudflare/circl v1.3.7 // indirect
-	github.com/cyphar/filepath-securejoin v0.2.5 // indirect
+	github.com/cyphar/filepath-securejoin v0.3.6 // indirect
 	github.com/emirpasic/gods v1.18.1 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/go-git/gcfg v1.5.1-0.20230307220236-3a3c6141e376 // indirect
-	github.com/go-git/go-billy/v5 v5.6.0 // indirect
+	github.com/go-git/go-billy/v5 v5.6.1 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/henvic/httpretty v0.0.6 // indirect
