@@ -6,7 +6,7 @@ require (
 	github.com/cli/go-gh/v2 v2.12.0
 	github.com/fatih/color v1.18.0
 	github.com/go-git/go-git/v5 v5.16.0
-	github.com/go-logr/logr v1.4.2
+	github.com/go-logr/logr v1.4.3
 	github.com/go-logr/zerologr v1.2.3
 	github.com/google/go-containerregistry v0.20.5
 	github.com/magefile/mage v1.15.0
