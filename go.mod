@@ -2,7 +2,7 @@ module github.com/gkwa/dailyare
 
 go 1.24.0
 
-toolchain go1.24.5
+toolchain go1.24.6
 
 require (
 	github.com/cli/go-gh/v2 v2.12.1
